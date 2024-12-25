@@ -96,20 +96,31 @@
     }
     // Function to display the results in the UI
     function displayResults(countries) {
-      const HTMLResponse = document.querySelector("#app");
-      // If no countries are found, show a warning message
-      if (countries.length === 0) {
-        HTMLResponse.innerHTML = '<div class="alert alert-warning">No se encontraron resultados.</div>';
-        return;
-      }
-      // Map the countries to display their names or a default message if unavailable
-      const listItems = countries
-        .map(country => codigos[country.country_id] || "No disponible")
-        .map(pais => `<li class="list-group-item">${pais}</li>`)
-        .join("");
-      // Display the list of countries in the HTML response
-      HTMLResponse.innerHTML = `<ul class="list-group">${listItems}</ul>`;
-    }
+  const HTMLResponse = document.querySelector("#app");
+
+  // If no countries are found, show a warning message
+  if (countries.length === 0) {
+    HTMLResponse.innerHTML = '<div class="alert alert-warning">No results found.</div>';
+    return;
+  }
+
+  // Map the countries to display their names, probabilities, and counts
+  const listItems = countries
+    .map(country => {
+      const countryName = codigos[country.country_id] || "No Disponible";
+      const probability = (country.probability * 100).toFixed(2); // Convert to percentage
+      return `<li class="list-group-item">
+                <strong>${countryName}</strong>: ${probability}% probabilidad 
+              </li>`;
+    })
+    .join("");
+
+  // Display the list of countries in the HTML response whith countries and probabilities
+  HTMLResponse.innerHTML = `
+    <h5>Total Occurrences: ${countries.length}</h5>
+    <ul class="list-group">${listItems}</ul>`;
+}
+
     // Add event listeners when the page loads
     window.onload = function () {
       // Set up the "Check" button to call the revisar function
